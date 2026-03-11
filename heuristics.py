@@ -128,7 +128,10 @@ def extract_features(url):
     features["has_fragment"] = len(fragment) > 0
 
     # 17. Uses non-standard port
-    features["has_port"] = parsed.port is not None and parsed.port not in (80, 443)
+    try:
+        features["has_port"] = parsed.port is not None and parsed.port not in (80, 443)
+    except ValueError:
+        features["has_port"] = False
 
     # 18. Double-slash redirect (//) after the protocol
     after_protocol = url.split("://", 1)[1] if "://" in url else url
