@@ -1,0 +1,23 @@
+# Malicious URL Detector
+# Feature references based on:
+#   Vanhoenshoven, F., Nápoles, G., Falcon, R., Vanhoof, K., & Koppen, M. (2020).
+#   "Machine Learning for Malicious URL Detection."
+#   ResearchGate: https://www.researchgate.net/publication/347620249_Machine_Learning_for_Malicious_URL_Detection
+
+# ML & Data Processing
+scikit-learn
+pandas
+numpy
+joblib
+
+# Web Framework
+streamlit
+plotly
+
+# URL Parsing & Feature Extraction
+tldextract
+python-whois
+requests
+
+# Utilities
+python-dotenv

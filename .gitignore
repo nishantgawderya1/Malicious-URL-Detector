@@ -1,0 +1,21 @@
+# Dataset files (too large / may trigger secret scanning)
+*.csv
+
+# Virtual environment
+.venv/
+venv/
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Environment variables
+.env
+
+# Model artifacts
+*.pkl
+*.joblib
+
+# IDE
+.vscode/
+.idea/
