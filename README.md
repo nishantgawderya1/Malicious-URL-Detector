@@ -7,16 +7,17 @@
 ![Pandas](https://img.shields.io/badge/Pandas-Data-150458?style=for-the-badge&logo=pandas&logoColor=white)
 ![NumPy](https://img.shields.io/badge/NumPy-Compute-013243?style=for-the-badge&logo=numpy&logoColor=white)
 
-A machine-learning-powered web app that detects malicious URLs by extracting **35 heuristic features** and scoring them in real time. Built with Streamlit for an interactive dashboard experience.
+A machine-learning-powered web app that detects malicious URLs using a **651,000+ URL dataset** ([Kaggle — Malicious URLs Dataset](https://www.kaggle.com/datasets/sid321axn/malicious-urls-dataset)) and **35 heuristic features**. Classifies URLs as **benign**, **phishing**, **malware**, or **defacement** in real time.
 
 ---
 
 ## ✨ Features
 
-- **35-Signal Heuristic Engine** — lexical, structural, statistical, and obfuscation analysis on any URL
+- **651K+ URL Dataset** — trained on Kaggle's Malicious URLs Dataset (benign, phishing, malware, defacement)
+- **35-Signal Feature Engine** — lexical, structural, statistical, and obfuscation analysis
+- **ML Classification** — scikit-learn classifiers (Random Forest, etc.) on extracted feature vectors
 - **Weighted Risk Scoring** — instant 0–100 risk score with Low / Medium / High verdict
 - **Interactive Dashboard** — risk gauge, tabbed feature breakdown, and scan history
-- **ML-Ready Architecture** — feature vectors plug directly into scikit-learn classifiers
 - **API Integration Slots** — VirusTotal, Google Safe Browsing, WHOIS (configurable)
 
 ---
@@ -58,13 +59,11 @@ streamlit run app.py
 
 ---
 
-## 📚 References
+## 📚 Dataset & References
 
-> Vanhoenshoven, F., Nápoles, G., Falcon, R., Vanhoof, K., & Koppen, M. (2020). *"Machine Learning for Malicious URL Detection."*
+> **Dataset:** [Malicious URLs Dataset](https://www.kaggle.com/datasets/sid321axn/malicious-urls-dataset) — 651,191 labeled URLs (Kaggle)
 >
-> Sahoo, D., Liu, C., & Hoi, S. C. H. (2017). *"Malicious URL Detection using Machine Learning: A Survey."*
->
-> Mohammad, R. M., Thabtah, F., & McCluskey, L. (2014). *"Phishing Websites Features"* — UCI ML Repository.
+> Vanhoenshoven et al. (2020) — *"ML for Malicious URL Detection"* · Sahoo et al. (2017) — *"Malicious URL Detection using ML: A Survey"*
 
 ---
 
