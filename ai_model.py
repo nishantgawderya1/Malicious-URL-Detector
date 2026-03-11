@@ -1,4 +1,5 @@
 import pandas as pd #for data manipulation
+from heuristics import extract_features
 
 # Load the dataset
 df = pd.read_csv('malicious_phish.csv')
@@ -17,3 +18,7 @@ print(f"\nShape: {df.shape}")
 print(f"Columns: {list(df.columns)}")
 
 print(df['type'].value_counts())
+
+# Extract features for every URL
+feature_df = pd.DataFrame(df['url'].apply(extract_features).tolist())
+print(feature_df.head())

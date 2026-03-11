@@ -54,7 +54,21 @@ BRAND_NAMES = [
 
 def extract_features(url):
     features = {}
-    parsed = urlparse(url if "://" in url else "http://" + url)
+    try:
+        parsed = urlparse(url if "://" in url else "http://" + url)
+    except ValueError:
+        return {key: 0 for key in [
+            "has_https", "has_keyword", "url_length", "num_dots",
+            "at_symbol", "num_digits", "suspicious_tld", "hyphen_count",
+            "has_ip_address", "domain_length", "path_length", "num_subdomains",
+            "num_subdirectories", "num_query_params", "query_length",
+            "has_fragment", "has_port", "double_slash_redirect", "is_shortened",
+            "suspicious_extension", "num_encoded_chars", "url_entropy",
+            "domain_entropy", "digit_letter_ratio", "has_punycode", "has_tilde",
+            "num_special_chars", "num_slashes", "num_ampersands", "brand_in_path",
+            "domain_has_digits", "max_host_token_len", "avg_token_length",
+            "num_tokens", "max_consecutive_chars"
+        ]}
     hostname = parsed.hostname or ""
     path = parsed.path or ""
     query = parsed.query or ""
