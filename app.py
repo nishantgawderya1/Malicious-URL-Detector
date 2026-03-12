@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import plotly.graph_objects as go
 from datetime import datetime
+from apis import check_virustotal
 from heuristics import extract_features
 import joblib
 
@@ -294,6 +295,7 @@ if analyze_clicked and url_input.strip():
     features = extract_features(url)
     features_list = list(features.values())
     prediction = model.predict([features_list])
+    vt_result = check_virustotal(url)
     score = compute_risk_score(features)
     label, css_class = risk_label(score)
 
@@ -392,7 +394,18 @@ if analyze_clicked and url_input.strip():
     api_col1, api_col2, api_col3 = st.columns(3)
 
     with api_col1:
-        st.info("🔗 **VirusTotal**\n\n_Integration pending — add your API key in `.env`_")
+        if "error" in vt_result:
+            st.warning(f"🔗 **VirusTotal**\n\n{vt_result['error']}")
+        elif vt_result.get("queued"):
+            st.info(f"🔗 **VirusTotal**\n\n{vt_result['message']}")
+        else:
+            st.success(
+                "🔗 **VirusTotal**\n\n"
+                f"Malicious: {vt_result['malicious']}\n\n"
+                f"Suspicious: {vt_result['suspicious']}\n\n"
+                f"Harmless: {vt_result['harmless']}\n\n"
+                f"Undetected: {vt_result['undetected']}"
+            )
     with api_col2:
         st.info("🔗 **Google Safe Browsing**\n\n_Integration pending — add your API key in `.env`_")
     with api_col3:
