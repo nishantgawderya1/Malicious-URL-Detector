@@ -3,6 +3,9 @@ import pandas as pd
 import plotly.graph_objects as go
 from datetime import datetime
 from heuristics import extract_features
+import joblib
+
+model = joblib.load('model.pkl')
 
 
 # ── Page Config ──────────────────────────────────────────────────────────────
@@ -175,10 +178,18 @@ def compute_risk_score(features):
         score += 6
     elif features["url_entropy"] > 3.8:
         score += 3
+    if features["domain_entropy"] > 4.0:
+        score += 5
+    elif features["domain_entropy"] > 3.0:
+        score += 2
     if features["digit_letter_ratio"] > 0.6:
         score += 5
     if features["max_consecutive_chars"] > 3:
         score += 3
+    if features["avg_token_length"] > 15:
+        score += 5
+    elif features["avg_token_length"] > 10:
+        score += 2
 
     # ── Suspicious Patterns ─────────────────────────────────────────
     if features["is_shortened"]:
@@ -193,6 +204,10 @@ def compute_risk_score(features):
         score += 3
     if features["num_special_chars"] > 5:
         score += 3
+    if features["num_ampersands"] > 5:
+        score += 4
+    elif features["num_ampersands"] > 2:
+        score += 2
     if features["max_host_token_len"] > 20:
         score += 4
 
@@ -206,6 +221,10 @@ def risk_label(score):
         return "Medium Risk", "risk-medium"
     else:
         return "High Risk", "risk-high"
+
+
+def _card(name, value):
+    st.write(f"**{name}:** {value}")
 
 
 def build_gauge(score):
@@ -273,8 +292,17 @@ with col_btn:
 if analyze_clicked and url_input.strip():
     url = url_input.strip()
     features = extract_features(url)
+    features_list = list(features.values())
+    prediction = model.predict([features_list])
     score = compute_risk_score(features)
     label, css_class = risk_label(score)
+
+    if score <= 30:
+        ml_verdict = "Safe ✅"
+    elif score <= 60:
+        ml_verdict = "Suspicious ⚠️" if prediction[0] == 0 else "Malicious 🚨"
+    else:
+        ml_verdict = "Malicious 🚨"
 
     # Save to history
     st.session_state.history.insert(0, {
@@ -295,6 +323,10 @@ if analyze_clicked and url_input.strip():
             f'<div style="text-align:center"><span class="risk-badge {css_class}">{label} — {score}/100</span></div>',
             unsafe_allow_html=True,
         )
+        st.markdown(
+            f'<div style="text-align:center; margin-top:0.8rem; font-size:1.1rem;"><b>ML Verdict:</b> {ml_verdict}</div>',
+            unsafe_allow_html=True,
+        )
 
     # ── Feature Breakdown ────────────────────────────────────────────────
     with col_features:
@@ -307,12 +339,6 @@ if analyze_clicked and url_input.strip():
             "🏗️ Structure",
             "🕵️ Obfuscation",
         ])
-
-        def _card(name, value):
-            st.markdown(
-                f'<div class="feature-card"><b>{name}:</b> {value}</div>',
-                unsafe_allow_html=True,
-            )
 
         with tab1:
             _card("HTTPS", "✅ Yes" if features["has_https"] else "❌ No")
