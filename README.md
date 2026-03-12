@@ -22,6 +22,15 @@ A machine-learning-powered web app that detects malicious URLs using a **651,000
 
 ---
 
+## � Model Performance
+
+| Metric | Score |
+|--------|-------|
+| **Accuracy** | **97.72%** |
+| **Dataset Size** | 651,000+ URLs |
+
+---
+
 ## 🚀 Quick Start
 
 ```bash
@@ -57,9 +66,9 @@ streamlit run app.py
 | 🏗️ Structural | 10 | Subdomain count, directory depth, dot/slash/hyphen counts, double-slash redirect |
 | 🕵️ Obfuscation & Entropy | 7 | Shannon entropy, digit/letter ratio, %-encoding, consecutive char repetition |
 
----
 
-## 📚 Dataset & References
+
+## �📚 Dataset & References
 
 > **Dataset:** [Malicious URLs Dataset](https://www.kaggle.com/datasets/sid321axn/malicious-urls-dataset) — 651,191 labeled URLs (Kaggle)
 >

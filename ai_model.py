@@ -3,6 +3,9 @@ from sklearn.model_selection import train_test_split
 from heuristics import extract_features
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score
+import joblib
+
+
 
 
 # Load the dataset
@@ -36,6 +39,9 @@ model.fit(X_train, y_train)
 
 y_pred = model.predict(X_test)
 accuracy = accuracy_score(y_test, y_pred)
+
+
+joblib.dump(model, 'model.pkl')
 
 print(f"Training samples: {len(X_train)}")
 print(f"Testing samples: {len(X_test)}")
