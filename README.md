@@ -18,7 +18,7 @@ A machine-learning-powered web app that detects malicious URLs using a **651,000
 - **ML Classification** — scikit-learn classifiers (Random Forest, etc.) on extracted feature vectors
 - **Weighted Risk Scoring** — instant 0–100 risk score with Low / Medium / High verdict
 - **Interactive Dashboard** — risk gauge, tabbed feature breakdown, and scan history
-- **API Integration Slots** — VirusTotal, Google Safe Browsing, WHOIS (configurable)
+- **API Integration Slots** — VirusTotal, WHOIS (configurable)
 
 ---
 

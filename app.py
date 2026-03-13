@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 import plotly.graph_objects as go
 from datetime import datetime
-from apis import check_virustotal
+from apis import check_virustotal, url_age_calculate
 from heuristics import extract_features
 import joblib
 
@@ -296,6 +296,7 @@ if analyze_clicked and url_input.strip():
     features_list = list(features.values())
     prediction = model.predict([features_list])
     vt_result = check_virustotal(url)
+    age_result = url_age_calculate(url)
     score = compute_risk_score(features)
     label, css_class = risk_label(score)
 
@@ -391,7 +392,7 @@ if analyze_clicked and url_input.strip():
     # ── API Results ──────────────────────────────────────────────────────
     st.markdown('<div class="section-title">API Threat Intelligence</div>', unsafe_allow_html=True)
 
-    api_col1, api_col2, api_col3 = st.columns(3)
+    api_col1, api_col2 = st.columns(2)
 
     with api_col1:
         if "error" in vt_result:
@@ -407,9 +408,12 @@ if analyze_clicked and url_input.strip():
                 f"Undetected: {vt_result['undetected']}"
             )
     with api_col2:
-        st.info("🔗 **Google Safe Browsing**\n\n_Integration pending — add your API key in `.env`_")
-    with api_col3:
-        st.info("🔗 **WHOIS Lookup**\n\n_Integration pending — connect via `python-whois`_")
+        if "error" in age_result:
+            st.warning(f"🔗 **WHOIS URL Age**\n\n{age_result['error']}")
+        elif age_result.get("is_suspicious"):
+            st.warning(f"🔗 **WHOIS URL Age**\n\n{age_result['message']}")
+        else:
+            st.success(f"🔗 **WHOIS URL Age**\n\n{age_result['message']}")
 
 elif analyze_clicked:
     st.warning("Please enter a URL to analyze.")
@@ -453,7 +457,7 @@ website_features = [
     ("🤖", "ML Classification",
      "A trained scikit-learn model predicts maliciousness based on the extracted feature vector."),
     ("🌐", "API Cross-Check",
-     "Validates URLs against VirusTotal, Google Safe Browsing, and WHOIS databases."),
+        "Validates URLs against VirusTotal and WHOIS data sources."),
     ("📊", "Real-Time Dashboard",
      "Interactive risk gauge, feature breakdown, and scan history — all in one place."),
 ]
@@ -478,23 +482,28 @@ st.markdown('<div class="section-title">About the Developer</div>', unsafe_allow
 dev_col1, dev_col2 = st.columns([1, 3])
 
 with dev_col1:
-    st.markdown("""
-    <div style="background:#2c5364; border-radius:50%; width:120px; height:120px;
-                display:flex; align-items:center; justify-content:center;
-                margin:auto; font-size:3rem; color:white;">
-        👨‍💻
-    </div>
-    """, unsafe_allow_html=True)
+    st.image("my-avatar1.png", width=140)
 
 with dev_col2:
     st.markdown("""
-    **Nisha**
+    **Nishant Gawderya**
 
-    I'm a developer passionate about cybersecurity, machine learning, and building tools that
-    make the internet safer. This project combines heuristic analysis with trained ML models and
-    external threat intelligence APIs to provide a multi-layered URL detection system.
+    I am a B.Tech CSE (AI/ML) student at SGT University, Gurugram, with a strong interest in
+    machine learning, computer vision, cybersecurity, and real-world product development.
 
-    Feel free to reach out or contribute to the project!
+    I currently work as a Research Trainee at IHFC, IIT Delhi, where I am building ReVive, an
+    AI-based physiotherapy assistant. I have also worked as a Data Analyst Intern at IISPPR,
+    applying Python, SQL, scikit-learn, XGBoost, SHAP, and EDA in practical projects.
+
+    My key projects include ReVive, this Malicious URL Detection System, and Cerebrax AI.
+
+    **Skills:** Python, Java, DSA, React.js, Node.js, Express.js, MongoDB, Git, Flask, Linux,
+    scikit-learn, TensorFlow, OpenCV, MediaPipe, NLP, AWS, EDA, and Machine Learning.
+
+    **Links:** [Portfolio](https://nishantgawderya.me/) | [LinkedIn](https://linkedin.com/in/nishant-gawderya) |
+    [GitHub](https://github.com/nishantgawderya1/)
+
+    **Contact:** nishantgawderya@gmail.com | +91 7056565151
     """)
 
 
@@ -506,8 +515,10 @@ st.markdown("""
 <div class="footer">
     <p><strong>Malicious URL Detector</strong> &nbsp;|&nbsp; Built with Streamlit & Python</p>
     <p>
-        📧 <a href="mailto:your.email@example.com">your.email@example.com</a> &nbsp;|&nbsp;
-        🔗 <a href="https://github.com/" target="_blank">GitHub</a> &nbsp;|&nbsp;
+        📧 <a href="mailto:nishantgawderya@gmail.com">nishantgawderya@gmail.com</a> &nbsp;|&nbsp;
+        💼 <a href="https://nishantgawderya.me/" target="_blank">Portfolio</a> &nbsp;|&nbsp;
+        🔗 <a href="https://github.com/nishantgawderya1/Malicious-URL-Detector" target="_blank">Project Repository</a> &nbsp;|&nbsp;
+        👤 <a href="https://linkedin.com/in/nishant-gawderya" target="_blank">LinkedIn</a> &nbsp;|&nbsp;
         📄 <a href="https://www.researchgate.net/publication/347620249_Machine_Learning_for_Malicious_URL_Detection"
               target="_blank">Research Paper Reference</a>
     </p>

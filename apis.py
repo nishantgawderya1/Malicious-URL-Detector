@@ -1,7 +1,10 @@
 import base64
 import os
+from datetime import datetime, timezone
+from urllib.parse import urlparse
 
 import requests
+import whois
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -43,3 +46,53 @@ def check_virustotal(url):
 		}
 	except requests.RequestException as exc:
 		return {"error": f"VirusTotal request failed: {exc}"}
+
+
+def url_age_calculate(url, suspicious_days=180):
+	"""Calculate domain age from WHOIS data and flag very new domains as suspicious."""
+	parsed = urlparse(url if url.startswith(("http://", "https://")) else f"http://{url}")
+	domain = parsed.netloc.split(":")[0].strip().lower()
+
+	if not domain:
+		return {"error": "Could not parse a valid domain from the URL."}
+
+	try:
+		whois_data = whois.whois(domain)
+		creation_date = whois_data.creation_date
+
+		# Many WHOIS providers return multiple creation dates; use the earliest one.
+		if isinstance(creation_date, list):
+			creation_date = min(d for d in creation_date if d is not None) if creation_date else None
+
+		if creation_date is None:
+			return {"error": "WHOIS did not return a creation date for this domain."}
+
+		if isinstance(creation_date, str):
+			creation_date = datetime.fromisoformat(creation_date.replace("Z", "+00:00"))
+
+		if creation_date.tzinfo is None:
+			creation_date = creation_date.replace(tzinfo=timezone.utc)
+
+		now = datetime.now(timezone.utc)
+		age_days = (now - creation_date).days
+		age_days = max(age_days, 0)
+		age_years = round(age_days / 365, 2)
+		is_suspicious = age_days < suspicious_days
+
+		if is_suspicious:
+			message = (
+				f"Domain age is {age_days} days (~{age_years} years). "
+				f"This is below {suspicious_days} days and may be suspicious."
+			)
+		else:
+			message = f"Domain age is {age_days} days (~{age_years} years)."
+
+		return {
+			"domain": domain,
+			"age_days": age_days,
+			"age_years": age_years,
+			"is_suspicious": is_suspicious,
+			"message": message,
+		}
+	except Exception as exc:
+		return {"error": f"WHOIS lookup failed: {exc}"}
