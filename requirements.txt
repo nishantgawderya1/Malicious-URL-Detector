@@ -11,8 +11,8 @@ numpy
 joblib
 
 # Web Framework
-streamlit==1.28.0
-altair==4.2.2
+streamlit
+altair
 plotly
 
 # URL Parsing & Feature Extraction
